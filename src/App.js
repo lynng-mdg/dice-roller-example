@@ -1,4 +1,3 @@
-
 import './App.css';
 import { useState } from 'react';
 import DiceBtn from './DiceBtn';
@@ -7,11 +6,12 @@ function randomNumber( roll = 20 ) {
   return Math.floor( Math.random() * roll ) + 1
 }
 
-const numBtns = 5;
-
 function App() {
-  const initialValue = Array.from(Array( numBtns ));
-  const [ result, setResult ] = useState( initialValue );
+  const [ numBtns, setNumBtns] = useState( 3 );
+  console.log( { numBtns });
+
+  const getInitialValue = () => Array.from(Array( numBtns ));
+  const [ result, setResult ] = useState( getInitialValue() );
 
   console.log( 'State is: ', result );
   
@@ -28,12 +28,18 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <input type="number" onChange={( event ) => {
+          setNumBtns(event.target.value);
+          setResult( getInitialValue() );
+        }}/>
+        
         Your result is: {result.map( (roll, i) => {
             return <div key={i}>{roll ? `${roll}` : 'no roll yet'}</div>;
         } )}
+
         {result.map( ( num, index ) => {
           return (
-            <DiceBtn onClick={ () => onClick( index ) }>
+            <DiceBtn key={index} onClick={ () => onClick( index ) }>
               Button {index + 1}
             </DiceBtn>
           )
@@ -41,7 +47,7 @@ function App() {
 
         <br/>
         
-        <button onClick={() => setResult([ null, null, null])}>CLEAR</button>
+        <button onClick={() => setResult( getInitialValue() )}>CLEAR</button>
 
       </header>
     </div>
